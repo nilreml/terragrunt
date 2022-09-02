@@ -169,7 +169,7 @@ func TerragruntConfigFromPartialConfigString(
 	decodeList []PartialDecodeSectionType,
 ) (*TerragruntConfig, error) {
 	if terragruntOptions.UsePartialParseConfigCache {
-		var cacheKey = fmt.Sprintf("%#v-%#v-%#v", configString, includeFromChild, decodeList)
+		var cacheKey = fmt.Sprintf("%#v-%#v-%#v-%#v-%#v", filename, terragruntOptions, configString, includeFromChild, decodeList)
 		var config, found = terragruntConfigCache.Get(cacheKey)
 
 		if !found {
