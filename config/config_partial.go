@@ -27,6 +27,18 @@ const (
 	RemoteStateBlock
 )
 
+func (i PartialDecodeSectionType) String() string {
+	return [...]string{
+		"DependenciesBlock",
+		"DependencyBlock",
+		"TerraformBlock",
+		"TerraformSource",
+		"TerragruntFlags",
+		"TerragruntVersionConstraints",
+		"RemoteStateBlock",
+	}[i]
+}
+
 // terragruntIncludeMultiple is a struct that can be used to only decode the include block with labels.
 type terragruntIncludeMultiple struct {
 	Include []IncludeConfig `hcl:"include,block"`
@@ -169,11 +181,11 @@ func TerragruntConfigFromPartialConfigString(
 	decodeList []PartialDecodeSectionType,
 ) (*TerragruntConfig, error) {
 	if terragruntOptions.UsePartialParseConfigCache {
-		var cacheKey = fmt.Sprintf("%#v-%#v-%#v-%#v-%#v", filename, terragruntOptions, configString, includeFromChild, decodeList)
+		var cacheKey = fmt.Sprintf("%#v-%#v-%#v-%#v", filename, configString, includeFromChild, decodeList)
 		var config, found = terragruntConfigCache.Get(cacheKey)
 
 		if !found {
-			terragruntOptions.Logger.Debugf("Cache miss for '%s' (partial parsing).", filename)
+			terragruntOptions.Logger.Debugf("Cache miss for '%s' (partial parsing), decodeList: '%v'.", filename, decodeList)
 			tgConfig, err := PartialParseConfigString(configString, terragruntOptions, includeFromChild, filename, decodeList)
 			if err != nil {
 				return nil, err
@@ -181,7 +193,7 @@ func TerragruntConfigFromPartialConfigString(
 			config = *tgConfig
 			terragruntConfigCache.Put(cacheKey, config)
 		} else {
-			terragruntOptions.Logger.Debugf("Cache hit for '%s' (partial parsing).", filename)
+			terragruntOptions.Logger.Debugf("Cache hit for '%s' (partial parsing), decodeList: '%v'.", filename, decodeList)
 		}
 
 		return &config, nil
