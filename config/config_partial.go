@@ -27,18 +27,6 @@ const (
 	RemoteStateBlock
 )
 
-func (i PartialDecodeSectionType) String() string {
-	return [...]string{
-		"DependenciesBlock",
-		"DependencyBlock",
-		"TerraformBlock",
-		"TerraformSource",
-		"TerragruntFlags",
-		"TerragruntVersionConstraints",
-		"RemoteStateBlock",
-	}[i]
-}
-
 // terragruntIncludeMultiple is a struct that can be used to only decode the include block with labels.
 type terragruntIncludeMultiple struct {
 	Include []IncludeConfig `hcl:"include,block"`
